@@ -2,11 +2,11 @@ import { Component, inject } from '@angular/core';
 import { AuthService } from '../Service/auth-service';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-login',
-  imports: [FormsModule, ReactiveFormsModule, CommonModule],
+  imports: [FormsModule, ReactiveFormsModule, CommonModule, RouterModule],
   templateUrl: './login.html',
   styleUrl: './login.css',
 })
@@ -33,10 +33,23 @@ export class Login {
       switch(key){
         case "required":
           return "El campo es requerido"
-        
+        case "email":
+          return "El email es inválido"
+        default: 
+          return null
       }
     }
-
+    return null
   }
 
+  login(){
+    if(this.formLogin.valid){
+      const {email, password} = this.formLogin.value;
+      this.service.login(email, password).subscribe({
+        next: resp => {
+          this.router.navigate(["/"])
+        }
+      })
+    }
+  }
 }
